@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Carousel</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            padding: 5% 10%;
+        }
+
+        .left .item {
+            box-shadow: 3px 5px 5px 3px lightgray;
+            border-radius: 5px;
+            background: white;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width:100%;
+        }
+
+        .left .item:hover {
+            transform: scale(1.05);
+            box-shadow: 5px 7px 7px 5px lightgray;
+        }
+
+        .left .arrow span {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-radius: 50%;
+            background: rgb(130, 14, 14);
+            box-shadow: 2px 2px 3px lightgray;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .left .arrow span:hover {
+            background: lightgray;
+            transform: rotate(15deg);
+        }
+
+        .right {
+            position: relative;
+        }
+
+        .right img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 80%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 0;
+            transition: transform 0.6s ease, opacity 0.6s ease;
+        }
+
+        .right img.active {
+            opacity: 1;
+            z-index: 10;
+        }
+
+        .right img.exiting {
+            transform: translate(-150%, -50%) scale(1); /* Slide to the left */
+            opacity: 0;
+            z-index: 9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left">
+            <div class="item">
+                <div class="text">
+                    <h1>Website Development</h1>
+                    <p>Build modern, user-friendly websites with exceptional designs.</p>
+                </div>
+                <div class="arrow">
+                    <span data-index="0">&rarr;</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="text">
+                    <h1>Programming</h1>
+                    <p>Write efficient code in multiple programming languages.</p>
+                </div>
+                <div class="arrow">
+                    <span data-index="1">&rarr;</span>
+                </div>
+            </div>
+            <div class="item">
+                <div class="text">
+                    <h1>Coding</h1>
+                    <p>Create cutting-edge projects with seamless logic.</p>
+                </div>
+                <div class="arrow">
+                    <span data-index="2">&rarr;</span>
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <img src="./first.jpg" alt="First Image" class="image active">
+            <img src="./second.jpg" alt="Second Image" class="image">
+            <img src="./third.jpg" alt="Third Image" class="image">
+        </div>
+    </div>
+
+    <script>
+        // Grab all required DOM elements
+        const arrows = document.querySelectorAll('.arrow span');
+        const images = document.querySelectorAll('.right img');
+
+        let currentIndex = 0; // Track the currently active image index
+
+        // Function to handle image transitions
+        const showImage = (index) => {
+            // Prevent running for the same index
+            if (index === currentIndex) return;
+
+            // Get current and next images
+            const currentImage = images[currentIndex];
+            const nextImage = images[index];
+
+            // Mark the current image as exiting
+            currentImage.classList.remove('active');
+            currentImage.classList.add('exiting');
+
+            // Ensure the exiting class is removed once animation completes
+            currentImage.addEventListener(
+                'transitionend',
+                () => currentImage.classList.remove('exiting'),
+                { once: true }
+            );
+
+            // Activate the next image
+            nextImage.classList.add('active');
+            currentIndex = index; // Update current index
+        };
+
+        // Add event listeners to arrows
+        arrows.forEach((arrow) => {
+            const index = parseInt(arrow.getAttribute('data-index'));
+            arrow.addEventListener('click', () => {
+                showImage(index);
+            });
+        });
+
+        // Show the first image initially
+        showImage(0);
+    </script>
+</body>
+</html>
